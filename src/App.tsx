@@ -1,6 +1,7 @@
 import { Header, Container } from './layouts'
 import { SummaryCard, MonthlyChart } from './features/dashboard/components'
 import { TransactionList } from './features/transactions/components'
+import { CategoryChart } from './features/categories/components'
 import type { Transaction } from './shared/types'
 
 const monthlyData = [
@@ -60,6 +61,12 @@ const transactions: Transaction[] = [
   },
 ]
 
+const categoryData = [
+  { name: 'Moradia', value: 1500, color: '#3b82f6' },
+  { name: 'Alimentação', value: 450.5, color: '#10b981' },
+  { name: 'Serviços', value: 120, color: '#f59e0b' },
+]
+
 function App() {
   const income = 5250.0
   const expenses = 3420.5
@@ -74,10 +81,11 @@ function App() {
           <SummaryCard title="Receitas" value={income} variant="income" />
           <SummaryCard title="Despesas" value={expenses} variant="expense" />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <MonthlyChart data={monthlyData} />
-          <TransactionList transactions={transactions} />
+          <CategoryChart data={categoryData} />
         </div>
+        <TransactionList transactions={transactions} />
       </Container>
     </div>
   )
