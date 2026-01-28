@@ -99,17 +99,20 @@ function App() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <Header />
       <Container>
-        <div className="flex justify-end mb-6">
+        <div className="flex justify-between items-center mb-4 sm:mb-6">
+          <h2 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white">
+            Resumo
+          </h2>
           <Button onClick={() => setIsModalOpen(true)}>Nova Transação</Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
           <SummaryCard title="Saldo" value={balance} />
           <SummaryCard title="Receitas" value={income} variant="income" />
           <SummaryCard title="Despesas" value={expenses} variant="expense" />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
           <MonthlyChart data={monthlyData} />
           <CategoryChart data={categoryData} />
         </div>

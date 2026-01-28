@@ -6,8 +6,8 @@ export function Header() {
 
   return (
     <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-slate-900 dark:text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
+        <h1 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white">
           Finance Dashboard
         </h1>
         <button

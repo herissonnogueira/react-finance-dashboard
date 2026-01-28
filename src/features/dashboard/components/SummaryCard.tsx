@@ -20,9 +20,13 @@ export function SummaryCard({
   variant = 'default',
 }: SummaryCardProps) {
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
-      <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">{title}</p>
-      <p className={`text-2xl font-semibold ${variantStyles[variant]}`}>
+    <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 sm:p-6">
+      <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-1">
+        {title}
+      </p>
+      <p
+        className={`text-xl sm:text-2xl font-semibold ${variantStyles[variant]}`}
+      >
         {formatCurrency(value)}
       </p>
     </div>
