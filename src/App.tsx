@@ -7,6 +7,7 @@ import {
 } from './features/transactions/components'
 import { CategoryChart } from './features/categories/components'
 import { Button, Modal } from './shared/components'
+import { useLocalStorage } from './shared/hooks'
 import type { Transaction } from './shared/types'
 
 const monthlyData = [
@@ -73,7 +74,10 @@ const categoryData = [
 ]
 
 function App() {
-  const [transactions, setTransactions] = useState(initialTransactions)
+  const [transactions, setTransactions] = useLocalStorage<Transaction[]>(
+    'finance-transactions',
+    initialTransactions
+  )
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const income = transactions
