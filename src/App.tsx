@@ -1,7 +1,12 @@
+import { useState } from 'react'
 import { Header, Container } from './layouts'
 import { SummaryCard, MonthlyChart } from './features/dashboard/components'
-import { TransactionList } from './features/transactions/components'
+import {
+  TransactionList,
+  TransactionForm,
+} from './features/transactions/components'
 import { CategoryChart } from './features/categories/components'
+import { Button, Modal } from './shared/components'
 import type { Transaction } from './shared/types'
 
 const monthlyData = [
@@ -13,7 +18,7 @@ const monthlyData = [
   { month: 'Jun', income: 5400, expenses: 3100 },
 ]
 
-const transactions: Transaction[] = [
+const initialTransactions: Transaction[] = [
   {
     id: '1',
     description: 'Salário',
@@ -68,25 +73,56 @@ const categoryData = [
 ]
 
 function App() {
-  const income = 5250.0
-  const expenses = 3420.5
+  const [transactions, setTransactions] = useState(initialTransactions)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const income = transactions
+    .filter((t) => t.type === 'income')
+    .reduce((sum, t) => sum + t.amount, 0)
+
+  const expenses = transactions
+    .filter((t) => t.type === 'expense')
+    .reduce((sum, t) => sum + t.amount, 0)
+
   const balance = income - expenses
+
+  function handleAddTransaction(transaction: Transaction) {
+    setTransactions([transaction, ...transactions])
+    setIsModalOpen(false)
+  }
 
   return (
     <div className="min-h-screen bg-slate-50">
       <Header />
       <Container>
+        <div className="flex justify-end mb-6">
+          <Button onClick={() => setIsModalOpen(true)}>Nova Transação</Button>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <SummaryCard title="Saldo" value={balance} />
           <SummaryCard title="Receitas" value={income} variant="income" />
           <SummaryCard title="Despesas" value={expenses} variant="expense" />
         </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <MonthlyChart data={monthlyData} />
           <CategoryChart data={categoryData} />
         </div>
+
         <TransactionList transactions={transactions} />
       </Container>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Nova Transação"
+      >
+        <TransactionForm
+          onSubmit={handleAddTransaction}
+          onCancel={() => setIsModalOpen(false)}
+        />
+      </Modal>
     </div>
   )
 }
