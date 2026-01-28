@@ -6,6 +6,7 @@ import {
   Legend,
   Tooltip,
 } from 'recharts'
+import { formatCurrency } from '../../../shared/utils'
 
 interface CategoryData {
   name: string
@@ -19,8 +20,8 @@ interface CategoryChartProps {
 
 export function CategoryChart({ data }: CategoryChartProps) {
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-6">
-      <h3 className="text-lg font-medium text-slate-900 mb-4">
+    <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
+      <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-4">
         Despesas por Categoria
       </h3>
       <div className="h-72">
@@ -40,12 +41,13 @@ export function CategoryChart({ data }: CategoryChartProps) {
               ))}
             </Pie>
             <Tooltip
-              formatter={(value: number) =>
-                new Intl.NumberFormat('pt-BR', {
-                  style: 'currency',
-                  currency: 'BRL',
-                }).format(value)
-              }
+              contentStyle={{
+                backgroundColor: '#1e293b',
+                border: 'none',
+                borderRadius: '8px',
+                color: '#f8fafc',
+              }}
+              formatter={(value) => formatCurrency(Number(value))}
             />
             <Legend />
           </PieChart>

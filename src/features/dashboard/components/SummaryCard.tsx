@@ -9,7 +9,7 @@ interface SummaryCardProps {
 }
 
 const variantStyles: Record<Variant, string> = {
-  default: 'text-slate-900',
+  default: 'text-slate-900 dark:text-white',
   income: 'text-emerald-600',
   expense: 'text-red-500',
 }
@@ -20,8 +20,8 @@ export function SummaryCard({
   variant = 'default',
 }: SummaryCardProps) {
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-6">
-      <p className="text-sm text-slate-500 mb-1">{title}</p>
+    <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
+      <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">{title}</p>
       <p className={`text-2xl font-semibold ${variantStyles[variant]}`}>
         {formatCurrency(value)}
       </p>
