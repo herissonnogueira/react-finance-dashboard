@@ -1,0 +1,31 @@
+@import 'tailwindcss';
+
+/* Custom theme variables for Finance Dashboard */
+@theme {
+  /* Colors - Finance Palette */
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-primary: #0f172a;
+  --color-secondary: #64748b;
+  --color-accent: #3b82f6;
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+
+  /* Dark mode colors */
+  --color-background-dark: #0f172a;
+  --color-surface-dark: #1e293b;
+  --color-primary-dark: #f8fafc;
+  --color-secondary-dark: #94a3b8;
+}
+
+/* Base styles */
+body {
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-primary);
+}
