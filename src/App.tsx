@@ -7,7 +7,7 @@ import {
 } from './features/transactions/components'
 import { CategoryChart } from './features/categories/components'
 import { Button, Modal } from './shared/components'
-import { useLocalStorage } from './shared/hooks'
+import { useDarkMode, useLocalStorage } from './shared/hooks'
 import type { Transaction } from './shared/types'
 
 const monthlyData = [
@@ -74,6 +74,7 @@ const categoryData = [
 ]
 
 function App() {
+  const { isDark, toggle } = useDarkMode()
   const [transactions, setTransactions] = useLocalStorage<Transaction[]>(
     'finance-transactions',
     initialTransactions
@@ -97,7 +98,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <Header />
+      <Header isDark={isDark} onToggleTheme={toggle} />
       <Container>
         <div className="flex justify-between items-center mb-4 sm:mb-6">
           <h2 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white">
@@ -113,8 +114,8 @@ function App() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
-          <MonthlyChart data={monthlyData} />
-          <CategoryChart data={categoryData} />
+          <MonthlyChart data={monthlyData} isDark={isDark} />
+          <CategoryChart data={categoryData} isDark={isDark} />
         </div>
 
         <TransactionList transactions={transactions} />
