@@ -1,11 +1,13 @@
+import { Trash2 } from 'lucide-react'
 import { formatCurrency, formatDate } from '../../../shared/utils'
 import type { Transaction } from '../../../shared/types'
 
 interface TransactionItemProps {
   transaction: Transaction
+  onDelete: (id: string) => void
 }
 
-export function TransactionItem({ transaction }: TransactionItemProps) {
+export function TransactionItem({ transaction, onDelete }: TransactionItemProps) {
   const isIncome = transaction.type === 'income'
 
   return (
@@ -18,11 +20,19 @@ export function TransactionItem({ transaction }: TransactionItemProps) {
           {transaction.category} • {formatDate(transaction.createdAt)}
         </p>
       </div>
-      <p
-        className={`text-sm font-medium ${isIncome ? 'text-emerald-600' : 'text-red-500'}`}
-      >
-        {isIncome ? '+' : '-'} {formatCurrency(transaction.amount)}
-      </p>
+      <div className="flex items-center gap-3">
+        <p
+          className={`text-sm font-medium ${isIncome ? 'text-emerald-600' : 'text-red-500'}`}
+        >
+          {isIncome ? '+' : '-'} {formatCurrency(transaction.amount)}
+        </p>
+        <button
+          onClick={() => onDelete(transaction.id)}
+          className="p-1 text-slate-400 hover:text-red-500 transition-colors cursor-pointer"
+        >
+          <Trash2 size={16} />
+        </button>
+      </div>
     </div>
   )
 }

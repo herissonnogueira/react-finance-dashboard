@@ -8,7 +8,7 @@ import {
 import { CategoryChart } from './features/categories/components'
 import { Button, Modal } from './shared/components'
 import { useDarkMode } from './shared/hooks'
-import { getTransactions, createTransaction } from './shared/services'
+import { getTransactions, createTransaction, deleteTransaction } from './shared/services'
 import type { Transaction } from './shared/types'
 
 const categoryColors: Record<string, string> = {
@@ -76,6 +76,11 @@ function App() {
     ...data,
   }))
 
+  async function handleDeleteTransaction(id: string) {
+    await deleteTransaction(id)
+    setTransactions((prev) => prev.filter((t) => t.id !== id))
+  }
+
   async function handleAddTransaction(data: {
     title: string
     amount: number
@@ -125,7 +130,7 @@ function App() {
           <CategoryChart data={categoryData} isDark={isDark} />
         </div>
 
-        <TransactionList transactions={transactions} />
+        <TransactionList transactions={transactions} onDelete={handleDeleteTransaction} />
       </Container>
 
       <Modal
