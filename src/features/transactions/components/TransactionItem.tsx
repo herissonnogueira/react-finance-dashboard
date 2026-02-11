@@ -1,13 +1,14 @@
-import { Trash2 } from 'lucide-react'
+import { Pencil, Trash2 } from 'lucide-react'
 import { formatCurrency, formatDate } from '../../../shared/utils'
 import type { Transaction } from '../../../shared/types'
 
 interface TransactionItemProps {
   transaction: Transaction
+  onEdit: (transaction: Transaction) => void
   onDelete: (id: string) => void
 }
 
-export function TransactionItem({ transaction, onDelete }: TransactionItemProps) {
+export function TransactionItem({ transaction, onEdit, onDelete }: TransactionItemProps) {
   const isIncome = transaction.type === 'income'
 
   return (
@@ -26,6 +27,12 @@ export function TransactionItem({ transaction, onDelete }: TransactionItemProps)
         >
           {isIncome ? '+' : '-'} {formatCurrency(transaction.amount)}
         </p>
+        <button
+          onClick={() => onEdit(transaction)}
+          className="p-1 text-slate-400 hover:text-blue-500 transition-colors cursor-pointer"
+        >
+          <Pencil size={16} />
+        </button>
         <button
           onClick={() => onDelete(transaction.id)}
           className="p-1 text-slate-400 hover:text-red-500 transition-colors cursor-pointer"

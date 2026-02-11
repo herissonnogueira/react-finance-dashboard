@@ -1,14 +1,17 @@
 import { useState } from 'react'
 import { Button } from '../../../shared/components'
 
+interface TransactionFormData {
+  title: string
+  amount: number
+  type: 'income' | 'expense'
+  category: string
+}
+
 interface TransactionFormProps {
-  onSubmit: (data: {
-    title: string
-    amount: number
-    type: 'income' | 'expense'
-    category: string
-  }) => void
+  onSubmit: (data: TransactionFormData) => void
   onCancel: () => void
+  initialData?: TransactionFormData
 }
 
 const categories = [
@@ -22,11 +25,11 @@ const categories = [
   'Outros',
 ]
 
-export function TransactionForm({ onSubmit, onCancel }: TransactionFormProps) {
-  const [title, setTitle] = useState('')
-  const [amount, setAmount] = useState('')
-  const [type, setType] = useState<'income' | 'expense'>('expense')
-  const [category, setCategory] = useState(categories[0])
+export function TransactionForm({ onSubmit, onCancel, initialData }: TransactionFormProps) {
+  const [title, setTitle] = useState(initialData?.title ?? '')
+  const [amount, setAmount] = useState(initialData ? String(initialData.amount) : '')
+  const [type, setType] = useState<'income' | 'expense'>(initialData?.type ?? 'expense')
+  const [category, setCategory] = useState(initialData?.category ?? categories[0])
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -125,7 +128,7 @@ export function TransactionForm({ onSubmit, onCancel }: TransactionFormProps) {
 
       <div className="flex gap-3 pt-2">
         <Button type="submit" className="flex-1">
-          Adicionar
+          {initialData ? 'Salvar' : 'Adicionar'}
         </Button>
         <Button type="button" variant="secondary" onClick={onCancel}>
           Cancelar

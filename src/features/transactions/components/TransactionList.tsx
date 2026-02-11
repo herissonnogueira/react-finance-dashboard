@@ -3,10 +3,11 @@ import { TransactionItem } from './TransactionItem'
 
 interface TransactionListProps {
   transactions: Transaction[]
+  onEdit: (transaction: Transaction) => void
   onDelete: (id: string) => void
 }
 
-export function TransactionList({ transactions, onDelete }: TransactionListProps) {
+export function TransactionList({ transactions, onEdit, onDelete }: TransactionListProps) {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 sm:p-6">
       <h3 className="text-base sm:text-lg font-medium text-slate-900 dark:text-white mb-4">
@@ -19,7 +20,7 @@ export function TransactionList({ transactions, onDelete }: TransactionListProps
       ) : (
         <div className="max-h-80 sm:max-h-96 overflow-y-auto">
           {transactions.map((transaction) => (
-            <TransactionItem key={transaction.id} transaction={transaction} onDelete={onDelete} />
+            <TransactionItem key={transaction.id} transaction={transaction} onEdit={onEdit} onDelete={onDelete} />
           ))}
         </div>
       )}

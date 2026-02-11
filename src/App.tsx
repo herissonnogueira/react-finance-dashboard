@@ -8,7 +8,7 @@ import {
 import { CategoryChart } from './features/categories/components'
 import { Button, Modal } from './shared/components'
 import { useDarkMode } from './shared/hooks'
-import { getTransactions, createTransaction, deleteTransaction } from './shared/services'
+import { getTransactions, createTransaction, updateTransaction, deleteTransaction } from './shared/services'
 import type { Transaction } from './shared/types'
 
 const categoryColors: Record<string, string> = {
@@ -26,6 +26,7 @@ function App() {
   const { isDark, toggle } = useDarkMode()
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -76,20 +77,37 @@ function App() {
     ...data,
   }))
 
+  function handleOpenEdit(transaction: Transaction) {
+    setEditingTransaction(transaction)
+    setIsModalOpen(true)
+  }
+
+  function handleCloseModal() {
+    setIsModalOpen(false)
+    setEditingTransaction(null)
+  }
+
   async function handleDeleteTransaction(id: string) {
     await deleteTransaction(id)
     setTransactions((prev) => prev.filter((t) => t.id !== id))
   }
 
-  async function handleAddTransaction(data: {
+  async function handleSubmitTransaction(data: {
     title: string
     amount: number
     type: 'income' | 'expense'
     category: string
   }) {
-    const created = await createTransaction(data)
-    setTransactions((prev) => [created, ...prev])
-    setIsModalOpen(false)
+    if (editingTransaction) {
+      const updated = await updateTransaction(editingTransaction.id, data)
+      setTransactions((prev) =>
+        prev.map((t) => (t.id === updated.id ? updated : t)),
+      )
+    } else {
+      const created = await createTransaction(data)
+      setTransactions((prev) => [created, ...prev])
+    }
+    handleCloseModal()
   }
 
   if (loading) {
@@ -116,7 +134,7 @@ function App() {
           <h2 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white">
             Resumo
           </h2>
-          <Button onClick={() => setIsModalOpen(true)}>Nova Transação</Button>
+          <Button onClick={() => { setEditingTransaction(null); setIsModalOpen(true) }}>Nova Transação</Button>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
@@ -130,17 +148,18 @@ function App() {
           <CategoryChart data={categoryData} isDark={isDark} />
         </div>
 
-        <TransactionList transactions={transactions} onDelete={handleDeleteTransaction} />
+        <TransactionList transactions={transactions} onEdit={handleOpenEdit} onDelete={handleDeleteTransaction} />
       </Container>
 
       <Modal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Nova Transação"
+        onClose={handleCloseModal}
+        title={editingTransaction ? 'Editar Transação' : 'Nova Transação'}
       >
         <TransactionForm
-          onSubmit={handleAddTransaction}
-          onCancel={() => setIsModalOpen(false)}
+          onSubmit={handleSubmitTransaction}
+          onCancel={handleCloseModal}
+          initialData={editingTransaction ?? undefined}
         />
       </Modal>
     </div>
