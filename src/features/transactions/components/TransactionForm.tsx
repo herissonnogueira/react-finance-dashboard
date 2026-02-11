@@ -46,7 +46,7 @@ export function TransactionForm({ onSubmit, onCancel }: TransactionFormProps) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-          Descrição
+          Título
         </label>
         <input
           type="text"
