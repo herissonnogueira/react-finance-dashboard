@@ -1,12 +1,12 @@
 // Transaction types
 export interface Transaction {
   id: string
-  description: string
+  title: string
   amount: number
   type: 'income' | 'expense'
   category: string
-  date: string
   createdAt: string
+  updatedAt: string
 }
 
 // Category types

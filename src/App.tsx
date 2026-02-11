@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Header, Container } from './layouts'
 import { SummaryCard, MonthlyChart } from './features/dashboard/components'
 import {
@@ -7,79 +7,34 @@ import {
 } from './features/transactions/components'
 import { CategoryChart } from './features/categories/components'
 import { Button, Modal } from './shared/components'
-import { useDarkMode, useLocalStorage } from './shared/hooks'
+import { useDarkMode } from './shared/hooks'
+import { getTransactions, createTransaction } from './shared/services'
 import type { Transaction } from './shared/types'
 
-const monthlyData = [
-  { month: 'Jan', income: 4200, expenses: 3100 },
-  { month: 'Fev', income: 4800, expenses: 3400 },
-  { month: 'Mar', income: 5100, expenses: 3200 },
-  { month: 'Abr', income: 4900, expenses: 3600 },
-  { month: 'Mai', income: 5250, expenses: 3420 },
-  { month: 'Jun', income: 5400, expenses: 3100 },
-]
-
-const initialTransactions: Transaction[] = [
-  {
-    id: '1',
-    description: 'Salário',
-    amount: 5250,
-    type: 'income',
-    category: 'Trabalho',
-    date: '2025-01-25',
-    createdAt: '2025-01-25T10:00:00',
-  },
-  {
-    id: '2',
-    description: 'Aluguel',
-    amount: 1500,
-    type: 'expense',
-    category: 'Moradia',
-    date: '2025-01-20',
-    createdAt: '2025-01-20T09:00:00',
-  },
-  {
-    id: '3',
-    description: 'Supermercado',
-    amount: 450.5,
-    type: 'expense',
-    category: 'Alimentação',
-    date: '2025-01-18',
-    createdAt: '2025-01-18T15:30:00',
-  },
-  {
-    id: '4',
-    description: 'Freelance',
-    amount: 800,
-    type: 'income',
-    category: 'Trabalho',
-    date: '2025-01-15',
-    createdAt: '2025-01-15T14:00:00',
-  },
-  {
-    id: '5',
-    description: 'Internet',
-    amount: 120,
-    type: 'expense',
-    category: 'Serviços',
-    date: '2025-01-10',
-    createdAt: '2025-01-10T08:00:00',
-  },
-]
-
-const categoryData = [
-  { name: 'Moradia', value: 1500, color: '#3b82f6' },
-  { name: 'Alimentação', value: 450.5, color: '#10b981' },
-  { name: 'Serviços', value: 120, color: '#f59e0b' },
-]
+const categoryColors: Record<string, string> = {
+  Trabalho: '#6366f1',
+  Moradia: '#3b82f6',
+  Alimentação: '#10b981',
+  Transporte: '#f59e0b',
+  Serviços: '#ef4444',
+  Lazer: '#8b5cf6',
+  Saúde: '#ec4899',
+  Outros: '#94a3b8',
+}
 
 function App() {
   const { isDark, toggle } = useDarkMode()
-  const [transactions, setTransactions] = useLocalStorage<Transaction[]>(
-    'finance-transactions',
-    initialTransactions
-  )
+  const [transactions, setTransactions] = useState<Transaction[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    getTransactions()
+      .then(setTransactions)
+      .catch(() => setError('Erro ao carregar transações'))
+      .finally(() => setLoading(false))
+  }, [])
 
   const income = transactions
     .filter((t) => t.type === 'income')
@@ -91,9 +46,61 @@ function App() {
 
   const balance = income - expenses
 
-  function handleAddTransaction(transaction: Transaction) {
-    setTransactions([transaction, ...transactions])
+  const categoryData = Object.entries(
+    transactions
+      .filter((t) => t.type === 'expense')
+      .reduce<Record<string, number>>((acc, t) => {
+        acc[t.category] = (acc[t.category] || 0) + t.amount
+        return acc
+      }, {}),
+  ).map(([name, value]) => ({
+    name,
+    value,
+    color: categoryColors[name] || '#94a3b8',
+  }))
+
+  const monthlyData = Object.entries(
+    transactions.reduce<
+      Record<string, { income: number; expenses: number }>
+    >((acc, t) => {
+      const month = new Date(t.createdAt).toLocaleDateString('pt-BR', {
+        month: 'short',
+      })
+      if (!acc[month]) acc[month] = { income: 0, expenses: 0 }
+      if (t.type === 'income') acc[month].income += t.amount
+      else acc[month].expenses += t.amount
+      return acc
+    }, {}),
+  ).map(([month, data]) => ({
+    month: month.charAt(0).toUpperCase() + month.slice(1),
+    ...data,
+  }))
+
+  async function handleAddTransaction(data: {
+    title: string
+    amount: number
+    type: 'income' | 'expense'
+    category: string
+  }) {
+    const created = await createTransaction(data)
+    setTransactions((prev) => [created, ...prev])
     setIsModalOpen(false)
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+        <p className="text-slate-500 dark:text-slate-400">Carregando...</p>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+        <p className="text-red-500">{error}</p>
+      </div>
+    )
   }
 
   return (

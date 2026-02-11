@@ -12,10 +12,10 @@ export function TransactionItem({ transaction }: TransactionItemProps) {
     <div className="flex items-center justify-between py-3 border-b border-slate-100 dark:border-slate-700 last:border-0">
       <div>
         <p className="text-sm font-medium text-slate-900 dark:text-white">
-          {transaction.description}
+          {transaction.title}
         </p>
         <p className="text-xs text-slate-500 dark:text-slate-400">
-          {transaction.category} • {formatDate(transaction.date)}
+          {transaction.category} • {formatDate(transaction.createdAt)}
         </p>
       </div>
       <p

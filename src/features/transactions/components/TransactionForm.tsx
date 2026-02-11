@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import { Button } from '../../../shared/components'
-import { generateId, getCurrentDate } from '../../../shared/utils'
-import type { Transaction } from '../../../shared/types'
 
 interface TransactionFormProps {
-  onSubmit: (transaction: Transaction) => void
+  onSubmit: (data: {
+    title: string
+    amount: number
+    type: 'income' | 'expense'
+    category: string
+  }) => void
   onCancel: () => void
 }
 
@@ -20,26 +23,20 @@ const categories = [
 ]
 
 export function TransactionForm({ onSubmit, onCancel }: TransactionFormProps) {
-  const [description, setDescription] = useState('')
+  const [title, setTitle] = useState('')
   const [amount, setAmount] = useState('')
   const [type, setType] = useState<'income' | 'expense'>('expense')
   const [category, setCategory] = useState(categories[0])
-  const [date, setDate] = useState(getCurrentDate())
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
-    const transaction: Transaction = {
-      id: generateId(),
-      description,
+    onSubmit({
+      title,
       amount: parseFloat(amount),
       type,
       category,
-      date,
-      createdAt: new Date().toISOString(),
-    }
-
-    onSubmit(transaction)
+    })
   }
 
   const inputStyles =
@@ -53,8 +50,8 @@ export function TransactionForm({ onSubmit, onCancel }: TransactionFormProps) {
         </label>
         <input
           type="text"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           className={inputStyles}
           required
         />
@@ -124,19 +121,6 @@ export function TransactionForm({ onSubmit, onCancel }: TransactionFormProps) {
             </option>
           ))}
         </select>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-          Data
-        </label>
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          className={inputStyles}
-          required
-        />
       </div>
 
       <div className="flex gap-3 pt-2">
