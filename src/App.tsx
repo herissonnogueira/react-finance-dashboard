@@ -88,6 +88,7 @@ function App() {
   }
 
   async function handleDeleteTransaction(id: string) {
+    if (!window.confirm('Tem certeza que deseja excluir esta transação?')) return
     await deleteTransaction(id)
     setTransactions((prev) => prev.filter((t) => t.id !== id))
   }
