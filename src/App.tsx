@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import toast, { Toaster } from 'react-hot-toast'
 import { Header, Container } from './layouts'
 import { SummaryCard, MonthlyChart } from './features/dashboard/components'
 import {
@@ -89,8 +90,13 @@ function App() {
 
   async function handleDeleteTransaction(id: string) {
     if (!window.confirm('Tem certeza que deseja excluir esta transação?')) return
-    await deleteTransaction(id)
-    setTransactions((prev) => prev.filter((t) => t.id !== id))
+    try {
+      await deleteTransaction(id)
+      setTransactions((prev) => prev.filter((t) => t.id !== id))
+      toast.success('Transação excluída')
+    } catch {
+      toast.error('Erro ao excluir transação')
+    }
   }
 
   async function handleSubmitTransaction(data: {
@@ -99,16 +105,22 @@ function App() {
     type: 'income' | 'expense'
     category: string
   }) {
-    if (editingTransaction) {
-      const updated = await updateTransaction(editingTransaction.id, data)
-      setTransactions((prev) =>
-        prev.map((t) => (t.id === updated.id ? updated : t)),
-      )
-    } else {
-      const created = await createTransaction(data)
-      setTransactions((prev) => [created, ...prev])
+    try {
+      if (editingTransaction) {
+        const updated = await updateTransaction(editingTransaction.id, data)
+        setTransactions((prev) =>
+          prev.map((t) => (t.id === updated.id ? updated : t)),
+        )
+        toast.success('Transação atualizada')
+      } else {
+        const created = await createTransaction(data)
+        setTransactions((prev) => [created, ...prev])
+        toast.success('Transação criada')
+      }
+      handleCloseModal()
+    } catch {
+      toast.error('Erro ao salvar transação')
     }
-    handleCloseModal()
   }
 
   if (loading) {
@@ -129,6 +141,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+      <Toaster position="top-right" />
       <Header isDark={isDark} onToggleTheme={toggle} />
       <Container>
         <div className="flex justify-between items-center mb-4 sm:mb-6">
