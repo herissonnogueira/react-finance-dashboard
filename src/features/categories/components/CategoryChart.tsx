@@ -25,8 +25,8 @@ export function CategoryChart({ data, isDark }: CategoryChartProps) {
       <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-4">
         Despesas por Categoria
       </h3>
-      <div className="h-72">
-        <ResponsiveContainer width="100%" height="100%">
+      <div>
+        <ResponsiveContainer width="100%" height={288}>
           <PieChart>
             <Pie
               data={data}

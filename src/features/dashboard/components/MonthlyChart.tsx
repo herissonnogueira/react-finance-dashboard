@@ -26,8 +26,8 @@ export function MonthlyChart({ data, isDark }: MonthlyChartProps) {
       <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-4">
         Evolução Mensal
       </h3>
-      <div className="h-72">
-        <ResponsiveContainer width="100%" height="100%">
+      <div>
+        <ResponsiveContainer width="100%" height={288}>
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" stroke="#475569" />
             <XAxis dataKey="month" tick={{ fill: '#94a3b8', fontSize: 12 }} />
