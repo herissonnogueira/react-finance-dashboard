@@ -2,7 +2,10 @@ import axios from 'axios'
 import type { Transaction } from '../types'
 
 const api = axios.create({
-  baseURL: 'http://localhost:3333',
+  baseURL: import.meta.env.VITE_API_URL,
+  headers: {
+    Authorization: `Bearer ${import.meta.env.VITE_API_TOKEN}`,
+  },
 })
 
 interface CreateTransactionData {

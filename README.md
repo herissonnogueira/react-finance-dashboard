@@ -27,14 +27,17 @@ Dashboard financeiro feito em React com foco em componentização, tipagem, resp
 ## Pré-requisitos
 
 - Node.js 20+
-- [Finance Dashboard API](https://github.com/herissonnogueira/finance-dashboard-api) rodando na porta 3333
+- [Finance Dashboard API](https://github.com/herissonnogueira/finance-dashboard-api) rodando
 
 ## Como rodar
 
 ```bash
-npm install
-npm run dev
+cp .env.example .env         # crie o arquivo de variáveis de ambiente
+npm install                  # instale as dependências
+npm run dev                  # inicie o servidor
 ```
+
+> O `.env.example` já vem com a URL padrão da API (`http://localhost:3333`). Defina o `VITE_API_TOKEN` com o mesmo valor do `API_TOKEN` configurado no backend.
 
 ## Estrutura
 
